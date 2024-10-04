@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حساب الجي بي أي</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 100%; /* اجعل العرض 100% لضمان توافقه مع الشاشات الصغيرة */
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box; /* تأكد من أن padding لا يؤثر على العرض */
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        #result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .instructions-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+            margin: 20px 0;
+            display: block;
+            width: 150px;
+            text-align: center;
+            font-size: 16px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .share-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+            margin-top: 20px;
+            display: block;
+            text-align: center;
+        }
+
+        /* أسلوب مخصص لأزرار الاستجابة */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 24px; /* تقليل حجم العنوان في الشاشات الصغيرة */
+            }
+
+            .input-group {
+                margin-bottom: 10px; /* تقليل المسافة بين المدخلات */
+            }
+
+            button {
+                padding: 8px; /* تقليل حجم الأزرار */
+            }
+
+            .instructions-button, .share-button {
+                font-size: 14px; /* تقليل حجم الخط للأزرار */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>حساب ال Gpa</h1>
+
+        <button class="instructions-button" onclick="showInstructions()">تعليمات</button>
+
+        <form id="gpa-form">
+            <div class="input-group">
+                <label for="terms">عدد الترمات:</label>
+                <input type="number" id="terms" value="1" min="1" onchange="updateTermInputs()">
+            </div>
+            <div id="term-inputs">
+                <h2>الترم الأول</h2>
+                <div class="input-group">
+                    <label for="grades1">الدرجات (افصل بين كل درجة بفاصلة):</label>
+                    <input type="text" id="grades1" placeholder="مثال: 4.0, 3.0, 2.7" required>
+                </div>
+                <div class="input-group">
+                    <label for="credit-hours1">عدد الساعات (افصل بين كل عدد ساعة بفاصلة):</label>
+                    <input type="text" id="credit-hours1" placeholder="مثال: 3, 3, 4" required>
+                </div>
+            </div>
+
+            <button type="submit" id="calculate-button">احسب ال Gpa الكلي</button>
+        </form>
+        <div id="result"></div>
+        <button class="share-button" id="share-button" style="display: none;">شارك النتائج</button>
+    </div>
+    <footer>
+        <p>Created with Ahmed Hussein</p>
+    </footer>
+    <script>
+        const updateTermInputs = () => {
+            const terms = document.getElementById('terms').value;
+            const termInputs = document.getElementById('term-inputs');
+            termInputs.innerHTML = '';
+
+            for (let i = 1; i <= terms; i++) {
+                termInputs.innerHTML += `
+                    <h2>الترم ${i}</h2>
+                    <div class="input-group">
+                        <label for="grades${i}">الدرجات (افصل بين كل درجة بفاصلة):</label>
+                        <input type="text" id="grades${i}" placeholder="مثال: 4.0, 3.0, 2.7" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="credit-hours${i}">عدد الساعات (افصل بين كل عدد ساعة بفاصلة):</label>
+                        <input type="text" id="credit-hours${i}" placeholder="مثال: 3, 3, 4" required>
+                    </div>
+                `;
+            }
+        };
+
+        document.getElementById('gpa-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const terms = document.getElementById('terms').value;
+            let totalGPA = 0;
+            let totalHours = 0;
+
+            for (let i = 1; i <= terms; i++) {
+                const gradesInput = document.getElementById(`grades${i}`).value;
+                const creditHoursInput = document.getElementById(`credit-hours${i}`).value;
+
+                const grades = gradesInput.split(',').map(Number);
+                const creditHours = creditHoursInput.split(',').map(Number);
+
+                if (grades.some(isNaN) || creditHours.some(isNaN)) {
+                    alert("يرجى التأكد من إدخال القيم بشكل صحيح.");
+                    return;
+                }
+
+                const gpa = calculateGPA(grades, creditHours);
+
+                totalGPA += gpa * creditHours.reduce((a, b) => a + b, 0);
+                totalHours += creditHours.reduce((a, b) => a + b, 0);
+            }
+
+            const overallGPA = totalHours > 0 ? totalGPA / totalHours : 0;
+            document.getElementById('result').innerText = `ال Gpa الكلي هو: ${overallGPA.toFixed(2)}`;
+            document.getElementById('share-button').style.display = 'block'; // إظهار زر المشاركة
+            document.getElementById('share-button').onclick = () => shareResults(overallGPA);
+        });
+
+        function calculateGPA(grades, creditHours) {
+            let totalPoints = 0;
+            let totalHours = 0;
+
+            for (let i = 0; i < grades.length; i++) {
+                totalPoints += grades[i] * creditHours[i];
+                totalHours += creditHours[i];
+            }
+
+            return totalHours > 0 ? totalPoints / totalHours : 0;
+        }
+
+        function showInstructions() {
+            alert("لإجراء حساب GPA، أدخل الدرجات وعدد الساعات لكل ترم.\nثم اضغط على 'احسب الجي بي أي الكلي' للحصول على النتيجة.");
+        }
+
+        function shareResults(overallGPA) {
+            const shareText = `ال Gpa الكلي هو : ${overallGPA.toFixed(2)}`;
+            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>
